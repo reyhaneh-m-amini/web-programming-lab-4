@@ -39,5 +39,3 @@ class TaskManager {
     }
     
 }
-
-module.exports = { Task, TaskManager };

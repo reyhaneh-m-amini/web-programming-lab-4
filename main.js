@@ -18,8 +18,28 @@ function renderTasks() {
         const title = document.createElement("span");
         title.textContent = task.title;
 
+        
+        const toggleBtn = document.createElement("button");
+        toggleBtn.textContent = "Toggle";
+
+        toggleBtn.addEventListener("click", () => {
+            taskManager.toggleTask(task.id);
+            renderTasks();
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+
+        deleteBtn.addEventListener("click", () => {
+            taskManager.removeTask(task.id);
+            renderTasks();
+        });
+
         taskDiv.appendChild(title);
+        taskDiv.appendChild(toggleBtn);
+        taskDiv.appendChild(deleteBtn);
         taskList.appendChild(taskDiv);
+
     });
 }
 
@@ -27,11 +47,15 @@ loadTasksBtn.addEventListener("click", async () => {
     statusMessage.textContent = "Loading tasks...";
 
     try {
-        const tasks = await fetchTasks();
+        const rawTasks = await fetchTasks();
+
+        const jsonTasks = JSON.stringify(rawTasks);
+        const parsedTasks = JSON.parse(jsonTasks);
 
         taskManager.setTasks(
-            tasks.map(item => new Task(item.id, item.title, item.completed))
+            parsedTasks.map(item => new Task(item.id, item.title, item.completed))
         );
+
 
         renderTasks();
         statusMessage.textContent = "";
